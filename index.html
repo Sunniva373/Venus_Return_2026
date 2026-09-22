@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Herzensdialoge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wdth,wght@0,62.5..100,300..600;1,62.5..100,300..500&family=Pinyon+Script&family=Raleway:wght@300;400;500;600&display=swap">
+<style>
+:root{
+  --ink:#4a3236;
+  --ink-soft:#7d5f64;
+  --ink-faint:#a88a8e;
+  --rose:#b98892;
+  --rose-deep:#94606b;
+  --line:rgba(148,96,107,.22);
+  --glass:rgba(255,255,255,.46);
+  --glass-strong:rgba(255,255,255,.68);
+  --glass-edge:rgba(255,255,255,.78);
+  --cream:#fbf4f1;
+  --serif:"Noto Serif",Georgia,"Times New Roman",serif;
+  --script:"Pinyon Script","Snell Roundhand","Apple Chancery",cursive;
+  --sans:"Raleway","Helvetica Neue",Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{background:#f1e1df}
+body{
+  margin:0;min-height:100vh;color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;
+  background:
+    radial-gradient(circle at 22% 20%, rgba(255,218,216,0.46), transparent 34%),
+    radial-gradient(circle at 80% 72%, rgba(196,140,150,0.18), transparent 36%),
+    linear-gradient(135deg, #f8ece8 0%, #ead6d6 100%);
+  background-attachment:fixed;
+  padding-inline:16px;
+}
+.wrap{max-width:760px;margin:0 auto;padding-block:28px 72px}
+h1,h2,h3{font-family:var(--serif);font-stretch:75%;font-weight:400;text-wrap:balance;margin:0;color:var(--ink)}
+p{margin:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--rose-deep);outline-offset:3px;border-radius:6px}
+.eyebrow{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);font-weight:500}
+
+/* ---------- top bar ---------- */
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:28px}
+.brand{font-family:var(--script);font-size:clamp(1.5rem,5vw,1.9rem);text-align:left;color:var(--rose-deep);line-height:1;background:none;border:0;padding:0;cursor:pointer}
+.navbtn{background:var(--glass);border:1px solid var(--glass-edge);border-radius:999px;padding:.45rem 1rem;font-size:.85rem;cursor:pointer;color:var(--ink);transition:background .2s}
+.navbtn:hover{background:var(--glass-strong)}
+
+/* ---------- hero ---------- */
+.hero{text-align:left;display:grid;gap:14px;margin-bottom:10px}
+.hero h1{font-size:clamp(2.3rem,7vw,3.6rem);line-height:1.02;font-weight:300}
+.hero h1 em{font-style:italic;color:var(--rose-deep)}
+.hero .script{font-family:var(--script);font-size:clamp(2rem,6vw,2.8rem);color:var(--rose-deep);line-height:1;margin-top:-4px}
+.hero .lead{font-family:var(--serif);font-style:italic;font-size:1.2rem;color:var(--ink-soft);max-width:34ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:.85rem;color:var(--ink-soft);margin-top:6px}
+.meta span b{font-weight:600;color:var(--ink)}
+
+/* ---------- loop ---------- */
+.loop{margin:18px 0 8px;position:relative}
+.loop svg{width:100%;height:auto;display:block;overflow:visible}
+.loop .path{fill:none;stroke:var(--rose);stroke-width:1.2;stroke-dasharray:2 5;stroke-linecap:round;opacity:.8}
+.loop .path-solid{fill:none;stroke:var(--rose-deep);stroke-width:1.4;stroke-linecap:round}
+.dot{cursor:pointer}
+.dot circle.m{fill:var(--cream);stroke:var(--rose);stroke-width:1.2;transition:r .25s}
+.dot.open circle.m{fill:#fff;stroke:var(--rose-deep);stroke-width:1.6}
+.dot.done circle.m{fill:var(--rose-deep);stroke:var(--rose-deep)}
+.dot.locked{cursor:default}
+.dot.locked circle.m{fill:rgba(255,255,255,.35);stroke:var(--ink-faint);stroke-dasharray:1.5 2}
+.dot text{font-family:var(--sans);font-size:9px;fill:var(--ink-soft);text-anchor:middle;letter-spacing:.04em}
+.dot.today circle.halo{fill:none;stroke:var(--rose-deep);stroke-width:.8;opacity:.5}
+.dot:not(.locked):hover circle.m{r:8}
+.loop-caption{font-size:.8rem;color:var(--ink-faint);text-align:center;font-style:italic;font-family:var(--serif)}
+
+/* ---------- intro note ---------- */
+.note{background:var(--glass);border:1px solid var(--glass-edge);border-radius:22px;padding:22px 24px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:grid;gap:10px;margin:26px 0}
+.note h2{font-size:1.35rem}
+.note p{color:var(--ink-soft)}
+.movement{font-family:var(--serif);font-stretch:80%;font-size:1.02rem;color:var(--rose-deep);line-height:1.8}
+
+/* ---------- chapter list ---------- */
+.list{display:grid;gap:2px;margin-top:8px}
+.row{display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:14px;padding:16px 6px;border-bottom:1px solid var(--line);background:none;border-left:0;border-right:0;border-top:0;text-align:left;cursor:pointer;width:100%;transition:background .2s}
+.row:hover:not(.is-locked){background:rgba(255,255,255,.28)}
+.row .date{font-family:var(--serif);font-stretch:70%;font-size:1.5rem;line-height:1;color:var(--rose-deep);font-variant-numeric:tabular-nums}
+.row .date small{display:block;font-family:var(--sans);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);margin-top:4px}
+.row .t{display:grid;gap:2px}
+.row .t .k{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint)}
+.row .t .n{font-family:var(--serif);font-stretch:85%;font-size:1.15rem;color:var(--ink)}
+.row .t .e{font-size:.82rem;color:var(--ink-soft)}
+.state{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;padding:.3rem .7rem;border-radius:999px;white-space:nowrap}
+.state.open{background:rgba(255,255,255,.6);color:var(--rose-deep);border:1px solid rgba(148,96,107,.3)}
+.state.done{background:var(--rose-deep);color:#fff}
+.state.locked{color:var(--ink-faint);border:1px dashed var(--ink-faint)}
+.row.is-locked{cursor:default}
+.row.is-locked .n,.row.is-locked .date{opacity:.55}
+
+/* ---------- chapter ---------- */
+.ch-head{display:grid;gap:10px;margin-bottom:24px}
+.ch-head h1{font-size:clamp(2rem,6.5vw,3rem);line-height:1.05;font-weight:300}
+.voices{font-family:var(--serif);font-style:italic;color:var(--ink-soft);font-size:1.05rem}
+.voices b{font-style:normal;font-weight:400;color:var(--rose-deep)}
+.feel{font-family:var(--serif);font-size:1.25rem;line-height:1.5;font-style:italic;color:var(--ink);border-left:1px solid var(--rose);padding-left:16px;margin-top:6px;max-width:40ch}
+
+.welcome{background:var(--glass-strong);border:1px solid var(--glass-edge);border-radius:22px;padding:22px 24px;margin-bottom:34px;display:grid;gap:8px}
+.welcome .script{font-family:var(--script);font-size:1.9rem;color:var(--rose-deep);line-height:1.1}
+.welcome p{color:var(--ink-soft);max-width:60ch}
+
+.step{display:grid;grid-template-columns:40px minmax(0,1fr);gap:4px 16px;padding-bottom:34px;position:relative}
+.step::before{content:"";position:absolute;left:19px;top:44px;bottom:6px;width:1px;background:var(--line)}
+.step:last-of-type::before{display:none}
+.step .num{width:40px;height:40px;border-radius:50%;border:1px solid var(--rose);display:grid;place-items:center;font-family:var(--serif);font-size:1rem;color:var(--rose-deep);background:rgba(255,255,255,.5)}
+.step .body{display:grid;gap:12px;min-width:0;padding-top:6px}
+.step h3{font-size:1.35rem;font-stretch:80%}
+.step .sub{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin-top:-8px}
+.step p{color:var(--ink-soft);max-width:62ch}
+
+.audio{display:flex;align-items:center;gap:14px;background:var(--glass);border:1px solid var(--glass-edge);border-radius:999px;padding:8px 18px 8px 8px}
+.audio .play{width:40px;height:40px;border-radius:50%;background:var(--rose-deep);border:0;display:grid;place-items:center;flex:none;opacity:.55;cursor:not-allowed}
+.audio .play svg{width:14px;height:14px;fill:#fff;margin-left:2px}
+.audio .wave{flex:1;height:22px;display:flex;align-items:center;gap:3px;min-width:0;overflow:hidden}
+.audio .wave i{display:block;width:2px;border-radius:2px;background:var(--rose);opacity:.5;flex:none}
+.audio .lbl{font-size:.78rem;color:var(--ink-faint);white-space:nowrap}
+
+details.astro{background:rgba(255,255,255,.3);border:1px solid var(--line);border-radius:16px;padding:12px 16px}
+details.astro summary{cursor:pointer;font-size:.85rem;color:var(--rose-deep);font-weight:500;list-style:none}
+details.astro summary::-webkit-details-marker{display:none}
+details.astro summary::after{content:" +";}
+details.astro[open] summary::after{content:" –"}
+details.astro ul{margin:10px 0 8px;padding-left:18px;color:var(--ink-soft);font-size:.92rem}
+details.astro p{font-size:.92rem}
+details.astro .fine{font-size:.78rem;color:var(--ink-faint);margin-top:8px;font-style:italic}
+
+.practice{background:var(--glass);border:1px solid var(--glass-edge);border-radius:18px;padding:16px 20px;display:grid;gap:6px}
+.practice .min{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--rose-deep)}
+.practice p{color:var(--ink)}
+
+.question{font-family:var(--serif);font-size:clamp(1.35rem,4vw,1.7rem);line-height:1.35;font-style:italic;color:var(--ink);max-width:30ch;font-weight:300}
+
+.topics{display:flex;flex-wrap:wrap;gap:6px}
+.topics span{font-size:.78rem;padding:.25rem .7rem;border-radius:999px;background:rgba(255,255,255,.45);color:var(--ink-soft);border:1px solid var(--glass-edge)}
+
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tab{background:transparent;border:1px solid var(--line);border-radius:999px;padding:.4rem .95rem;font-size:.85rem;cursor:pointer;color:var(--ink-soft)}
+.tab[aria-selected="true"]{background:var(--glass-strong);border-color:var(--glass-edge);color:var(--rose-deep);font-weight:500}
+
+.prompt{font-family:var(--serif);font-style:italic;color:var(--rose-deep);font-size:1.05rem}
+textarea{width:100%;min-height:140px;resize:vertical;border:1px solid var(--glass-edge);border-radius:16px;background:rgba(255,255,255,.55);padding:14px 16px;font-family:var(--serif);font-size:1.05rem;line-height:1.7;color:var(--ink)}
+textarea::placeholder{color:var(--ink-faint);font-style:italic}
+textarea:focus{outline:none;border-color:var(--rose);background:rgba(255,255,255,.72)}
+.saved{font-size:.75rem;color:var(--ink-faint);height:1em}
+
+.card-draw{display:grid;grid-template-columns:120px 1fr;gap:18px;align-items:center}
+.tcard{aspect-ratio:3/5;max-width:100%;border-radius:12px;border:1px solid var(--glass-edge);background:linear-gradient(160deg,rgba(255,255,255,.8),rgba(234,214,214,.7));display:grid;place-items:center;text-align:center;padding:10px;cursor:pointer;position:relative;box-shadow:0 10px 30px -18px rgba(120,70,80,.5);transition:transform .4s}
+.tcard:hover{transform:translateY(-2px)}
+.tcard .back{width:70%;height:80%;border:1px solid var(--rose);border-radius:8px;display:grid;place-items:center}
+.tcard .back svg{width:34px;height:34px;stroke:var(--rose-deep);fill:none;stroke-width:1}
+.tcard .face{font-family:var(--serif);font-stretch:75%;font-size:1.05rem;color:var(--rose-deep);line-height:1.2}
+.tcard .face small{display:block;font-family:var(--sans);font-size:.62rem;letter-spacing:.14em;color:var(--ink-faint);margin-bottom:6px}
+
+.letter-box{background:var(--cream);border-radius:6px;padding:22px 22px 16px;border:1px solid rgba(148,96,107,.14);box-shadow:0 18px 40px -30px rgba(120,70,80,.55);display:grid;gap:10px}
+.letter-box .lp{font-family:var(--script);font-size:1.7rem;color:var(--rose-deep);line-height:1.2}
+.letter-box textarea{background:transparent;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:4px 0;min-height:120px;background-image:repeating-linear-gradient(transparent 0 1.78rem, rgba(148,96,107,.12) 1.78rem calc(1.78rem + 1px));line-height:1.78rem}
+
+.mantra{font-family:var(--serif);font-size:1.3rem;line-height:1.5;color:var(--rose-deep);text-align:center;padding:22px 10px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-style:italic}
+
+.closing{text-align:center;display:grid;gap:10px;padding:34px 10px 10px;justify-items:center}
+.closing .script{font-family:var(--script);font-size:1.8rem;color:var(--rose-deep);line-height:1.2;max-width:22ch}
+.closing p{color:var(--ink-soft);max-width:44ch}
+.donebtn{margin-top:12px;background:var(--rose-deep);color:#fff;border:0;border-radius:999px;padding:.8rem 1.6rem;font-size:.92rem;letter-spacing:.04em;cursor:pointer;transition:opacity .2s}
+.donebtn:hover{opacity:.9}
+.donebtn.is-done{background:transparent;color:var(--rose-deep);border:1px solid var(--rose)}
+
+.pager{display:flex;justify-content:space-between;gap:10px;margin-top:40px;flex-wrap:wrap}
+
+.group{margin-top:34px}
+.group-h{display:flex;align-items:baseline;justify-content:space-between;gap:6px 14px;flex-wrap:wrap;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.group-h h2{font-size:1.5rem;font-stretch:80%}
+.note b{font-weight:600;color:var(--ink)}
+.recap{background:rgba(255,255,255,.3);border:1px solid var(--line);border-radius:22px;padding:20px 22px;margin-bottom:34px;display:grid;gap:10px}
+.recap > p{color:var(--ink-soft)}
+.recap ul{list-style:none;margin:4px 0 0;padding:0;display:grid;gap:14px}
+.recap li{display:grid;gap:4px;padding-left:14px;border-left:1px solid var(--rose)}
+.rc-link{background:none;border:0;padding:0;text-align:left;cursor:pointer;font-family:var(--serif);font-stretch:85%;font-size:1.08rem;color:var(--rose-deep)}
+.rc-link:hover{text-decoration:underline;text-underline-offset:3px}
+.rc-own{font-family:var(--serif);font-style:italic;color:var(--ink);font-size:.98rem}
+.rc-empty{font-size:.88rem;color:var(--ink-faint)}
+
+.ritual{margin:4px 0 0;padding-left:20px;display:grid;gap:6px;color:var(--ink)}
+.ritual li::marker{color:var(--rose-deep);font-family:var(--serif)}
+.sign-in{width:100%;border:0;border-bottom:1px solid var(--line);background:transparent;padding:6px 0;font-family:var(--serif);font-style:italic;font-size:1.05rem;color:var(--ink)}
+.sign-in:focus{outline:none;border-color:var(--rose)}
+.sign-place{text-align:right;font-family:var(--serif);font-style:italic;color:var(--ink-soft);margin-top:-14px}
+.letter-box + .letter-box{margin-top:4px}
+
+/* letter page */
+.full-letter{background:var(--cream);border-radius:6px;padding:clamp(24px,5vw,48px);box-shadow:0 24px 60px -40px rgba(120,70,80,.6);border:1px solid rgba(148,96,107,.14);display:grid;gap:22px}
+.full-letter .salute{font-family:var(--script);font-size:2.2rem;color:var(--rose-deep);line-height:1.1}
+.full-letter .part{display:grid;gap:6px}
+.full-letter .part .from{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint)}
+.full-letter .part p{font-family:var(--serif);font-size:1.1rem;line-height:1.8;white-space:pre-wrap;color:var(--ink)}
+.full-letter .empty{font-family:var(--serif);font-style:italic;color:var(--ink-faint)}
+.full-letter .sign{font-family:var(--script);font-size:1.8rem;color:var(--rose-deep);text-align:right}
+
+.draft{margin-top:56px;padding-top:18px;border-top:1px dashed var(--line);display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:.8rem;color:var(--ink-faint)}
+.draft label{display:flex;gap:8px;align-items:center;cursor:pointer}
+.draft input{accent-color:var(--rose-deep)}
+
+.fade{animation:fade .5s ease both}
+@keyframes fade{from{opacity:.2;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.fade{animation:none}.tcard{transition:none}}
+
+@media (max-width:520px){
+  .row{grid-template-columns:52px 1fr;gap:10px}
+  .row .state{grid-column:2;justify-self:start}
+  .card-draw{grid-template-columns:96px 1fr;gap:14px}
+  .step{grid-template-columns:32px minmax(0,1fr);gap:4px 12px}
+  .step .num{width:32px;height:32px;font-size:.9rem}
+  .step::before{left:15px;top:38px}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap" id="app"></div>
+
+<script>
+/* =========================================================
+   INHALT – Wenn Venus rückwärts tanzt · Herzensdialoge
+   ========================================================= */
+const DAYS = [
+ { date:"2026-10-03", kind:"Eröffnung", title:"Die Rückkehr zu deinem Herzen", gate:"Das Tor öffnet sich",
+   energyShort:"Venus wird rückläufig · Mars–Pluto",
+   astro:["Venus wird auf etwa 8° Skorpion rückläufig.","Mars im Löwen steht Pluto im Wassermann gegenüber.","Mond im Krebs im Trigon zu Venus.","Mond im Spannungsfeld zu Sonne und Saturn."],
+   astroText:"Venus hält symbolisch inne und wendet sich zurück. Im Skorpion berührt sie verborgene Wünsche, alte Bindungen, Vertrauen, Intimität und emotionale Wahrheit. Die Opposition zwischen Mars und Pluto verstärkt die Themen Macht, Kontrolle, Wille und unterdrückte Gefühle. Der Krebsmond macht den Beginn zugleich sehr empfindsam.",
+   feel:"Etwas ruft dich zurück. Nicht in die Vergangenheit, sondern zu einem Teil von dir, den du dort zurückgelassen hast.",
+   voices:["Venus","deiner Seele"],
+   topics:["Ankommen","Absicht für die Reise","dein Herzensraum"],
+   body:{min:"3 Minuten",text:"Setz dich bequem hin und lege eine Hand auf dein Brustbein. Atme dreimal lang aus, länger als du einatmest. Spüre, wie dein Rücken gehalten wird – von der Lehne, vom Boden, vom Raum um dich."},
+   question:"Was möchte mein Herz mir in diesen Wochen zurückgeben?",
+   impulse:"Welche Wahrheit über Liebe möchte in diesen Wochen von mir erkannt werden?",
+   letter:"Ich schreibe dir, weil …",
+   mantra:"Ich kehre zu mir zurück. Langsam. Und ganz.",
+   evening:"Zünde am Abend eine Kerze an und sprich deine Absicht für die Reise einmal laut aus." },
+
+ { date:"2026-10-04", kind:"Herzensdialog 1", title:"Die Liebe, die du gelernt hast", gate:"Was Liebe von dir verlangt hat",
+   energyShort:"Sonne–Saturn · Krebsmond",
+   astro:["Mond überwiegend im Krebs","Sonne in Opposition zu Saturn","Merkur im Skorpion im Quinkunx zu Uranus"],
+   astroText:"Sonne–Saturn kann Schwere, Ernsthaftigkeit oder das Gefühl hervorrufen, Erwartungen erfüllen zu müssen. Der Krebsmond erinnert an frühe emotionale Erfahrungen, Familie, Geborgenheit und das Bedürfnis nach Schutz.",
+   feel:"Du begegnest der Frage, wann Liebe für dich mit Pflicht, Leistung oder Verantwortung verbunden wurde.",
+   voices:["der Frau, die du heute bist","dem Mädchen von damals"],
+   topics:["frühe Vorstellungen von Liebe","Liebe und Leistung","emotionale Verantwortung für andere","das Bedürfnis, gebraucht zu werden"],
+   body:{min:"4 Minuten",text:"Lege eine Hand auf deinen Bauch, die andere auf dein Herz. Atme sanft in die untere Hand. Nimm wahr, welche Hand sich wärmer anfühlt – ohne es zu bewerten."},
+   question:"Wofür wurde ich früher geliebt – und wofür möchte ich heute geliebt werden?",
+   impulse:"„Lange dachte ich, ich müsse …, um geliebt zu werden.“",
+   letter:"Du musstest dir Liebe nie verdienen. Heute weiß ich …",
+   mantra:"Ich bin liebenswert – auch dann, wenn ich nichts leiste.",
+   evening:"Leg vor dem Einschlafen beide Hände auf deinen Bauch und sag innerlich: Ich darf ruhen." },
+
+ { date:"2026-10-05", kind:"Herzensdialog 2", title:"Sieh mich", gate:"Die Frau hinter deinen Rollen",
+   energyShort:"Löwemond · Mars und Pluto",
+   astro:["Mond im Löwen","Mond in Konjunktion mit Mars","Mond gegenüber Pluto","Mond im Quadrat zu Venus und Merkur","unterstützendes Trigon zu Saturn"],
+   astroText:"Der Löwemond möchte gesehen werden. Die Spannungen zu Pluto, Venus und Merkur können sichtbar machen, wo Selbstausdruck aus Angst vor Ablehnung zurückgehalten wurde. Gleichzeitig schenkt Saturn die Kraft, bei sich zu bleiben.",
+   feel:"Die verborgene Frau tritt hinter ihren Rollen hervor. Sie möchte nicht nur funktionieren, sondern gesehen werden.",
+   voices:["deinen Rollen","der Frau dahinter"],
+   topics:["die Rollen, in denen du dich bewegst","der Wunsch nach Anerkennung","Angst vor Sichtbarkeit","Aufmerksamkeit und echtes Gesehenwerden"],
+   body:{min:"3 Minuten",text:"Steh auf. Spüre deine Füße im Boden. Lass den Scheitel sanft nach oben wachsen und die Schultern sinken. Richte den Blick weich in den Raum – als würdest du dich selbst zeigen dürfen, ohne etwas vorzuführen."},
+   question:"Welcher Teil von mir wartet noch darauf, gesehen zu werden?",
+   impulse:"„Wenn du mich wirklich sehen könntest, würdest du erkennen …“",
+   letter:"Ich sehe dich. Ich sehe, wie du …",
+   mantra:"Ich darf sichtbar sein – so, wie ich bin.",
+   evening:"Schau dir am Abend einen Moment lang im Spiegel in die Augen. Nur schauen. Kein Urteil." },
+
+ { date:"2026-10-06", kind:"Herzensdialog 3", title:"Die ungesagten Worte", gate:"Sprich aus, was dein Herz weiß",
+   energyShort:"Merkur–Venus",
+   astro:["Mond trifft Jupiter im Löwen.","Merkur bildet eine Konjunktion mit der rückläufigen Venus im Skorpion.","Mond in harmonischer Verbindung zu Chiron."],
+   astroText:"Die Verbindung von Merkur und Venus ist für die Herzensdialoge besonders kostbar: Gedanken und Gefühle können einander begegnen. Im Skorpion geht es jedoch nicht um schöne Worte, sondern um Wahrhaftigkeit.",
+   feel:"Das Herz findet Worte für etwas, das lange nur als Gefühl vorhanden war.",
+   voices:["deinem Herzen","deinem Verstand"],
+   topics:["unausgesprochene Bedürfnisse","zurückgehaltene Liebeserklärungen","Worte, die wir von anderen gebraucht hätten","der innere Dialog zwischen Herz und Verstand"],
+   body:{min:"2 Minuten",text:"Lege eine Hand an deinen Hals. Summe beim Ausatmen ein weiches „mmm“. Spüre die Vibration unter deinen Fingern. Deine Stimme ist schon da, bevor sie Worte findet."},
+   question:"Was weiß mein Herz längst, was mein Verstand noch nicht aussprechen will?",
+   impulse:"„Was ich dir schon lange sagen möchte, ist …“",
+   letter:"Diese Worte hättest du damals hören sollen: …",
+   mantra:"Meine Wahrheit darf leise sein – und trotzdem gehört werden.",
+   evening:"Heute eignet sich eine geführte Schreibmeditation: Schreib fünf Minuten ohne abzusetzen." },
+
+ { date:"2026-10-07", kind:"Herzensdialog 4", title:"Was sich verändern darf", gate:"Befreie deine Lebendigkeit",
+   energyShort:"Mars–Uranus · Jungfraumond",
+   astro:["Mond in der Jungfrau","Mars im Sextil zu Uranus","Mond im Sextil zu Venus und Merkur","Mond im Spannungsaspekt zu Uranus"],
+   astroText:"Mars–Uranus bringt Mut zur Veränderung und den Impuls, vertraute Muster zu durchbrechen. Der Jungfraumond fragt, wie eine neue Haltung praktisch gelebt werden kann.",
+   feel:"Du willst nicht nur verstehen – du möchtest etwas verändern.",
+   voices:["deiner inneren Kritikerin","deiner Lebendigkeit"],
+   topics:["Gewohnheiten, die nicht mehr passen","Perfektionismus und Selbstkritik","kleine mutige Veränderungen","Selbstliebe als tägliche Handlung"],
+   body:{min:"2 Minuten",text:"Schüttle zuerst die Hände aus, dann die Arme, die Schultern, die Beine. Eine Minute lang, ganz ungeordnet. Dann werde still und spüre, wie lebendig dein Körper nachklingt."},
+   question:"Welche kleine Gewohnheit würde meinen Alltag freundlicher machen?",
+   impulse:"„Ich befreie dich von der Erwartung, immer … sein zu müssen.“",
+   letter:"Ab heute darfst du unperfekt sein, weil …",
+   mantra:"Selbstliebe ist kein Gefühl. Sie ist eine Handlung, jeden Tag.",
+   evening:"Kleine Aufgabe: Wähle eine konkrete Gewohnheit, durch die mehr Freundlichkeit in deinen Alltag einzieht – und beginne morgen damit." },
+
+ { date:"2026-10-08", kind:"Herzensdialog 5", title:"Die Weisheit deines Körpers", gate:"Dein Körper erinnert sich",
+   energyShort:"Körper- und Schattenthemen",
+   astro:["Mond in der Jungfrau","Spannungen des Mondes zu Mars, Venus und Merkur","Neptun im Quadrat zu Lilith"],
+   astroText:"Der Jungfraumond lenkt die Aufmerksamkeit auf den Körper und seine Signale. Neptun–Lilith kann diffuse Sehnsüchte, Scham oder verdrängte Empfindungen berühren. Dieser Tag braucht einen sanften, geerdeten Zugang.",
+   feel:"Der Körper erzählt eine Geschichte, für die es bisher keine Worte gab.",
+   voices:["deinem Körper","dir"],
+   topics:["Körpersignale als innere Sprache","Anspannung und Schutzmechanismen","Scham und Selbstannahme","Berührung, Sinnlichkeit und Verkörperung"],
+   body:{min:"5 Minuten",text:"Eine langsame Körperreise vom Scheitel bis zu den Füßen – ohne etwas verändern zu wollen. Wandere mit deiner Aufmerksamkeit über Stirn, Kiefer, Nacken, Brust, Bauch, Becken, Beine. Verweile dort, wo es sich warm, eng oder still anfühlt."},
+   question:"Was hat mein Körper für mich getragen, das ich nie gewürdigt habe?",
+   impulse:"„Mein Körper, ich danke dir dafür, dass du …“",
+   letter:"Du wohnst in einem Körper, der …",
+   mantra:"Mein Körper ist mein Zuhause. Ich komme heim.",
+   evening:"Creme am Abend langsam deine Hände oder Füße ein – als Geste, nicht als Pflicht." },
+
+ { date:"2026-10-09", kind:"Herzensdialog 6", title:"Liebe braucht Grenzen", gate:"Die Grenze zwischen dir und mir",
+   energyShort:"Waagemond · Saturnspannung",
+   astro:["Mond wechselt von der Jungfrau in die Waage.","Merkur im Quinkunx zu Saturn","Mond gegenüber Neptun und später Saturn","harmonische Verbindungen zu Pluto, Uranus und Mars"],
+   astroText:"Die Waage sucht Verbindung und Ausgleich. Saturn verlangt jedoch Klarheit. Der Tag zeigt, wo Harmonie auf Kosten der eigenen Wahrheit hergestellt wurde.",
+   feel:"Du erkennst, dass Frieden nicht bedeutet, dich selbst zu verlassen.",
+   voices:["deinem Ja","deinem Nein"],
+   topics:["Anpassung und Harmoniebedürfnis","die Angst vor Ablehnung","ein klares Nein als Selbstachtung","Verantwortung in Beziehungen neu ordnen"],
+   body:{min:"3 Minuten",text:"Breite im Stehen die Arme zur Seite aus und beschreibe langsam einen Kreis um dich – nach vorn, zur Seite, nach hinten. Das ist dein Raum. Spüre, wie es ist, ihn ganz einzunehmen."},
+   question:"Wo sage ich Ja, obwohl mein Herz längst Nein sagt?",
+   impulse:"„Ich werde dich nicht länger verlassen, nur damit …“",
+   letter:"Ich halte deine Grenze für dich, auch wenn …",
+   mantra:"Mein Nein ist ein Ja zu mir.",
+   evening:"Schreib am Abend einen Satz auf, mit dem du freundlich und klar Nein sagen kannst." },
+
+ { date:"2026-10-10", kind:"Herzensdialog 7", title:"Heute wähle ich mich", gate:"Eine neue Beziehung zu dir",
+   energyShort:"Neumond Waage · Venus–Mars",
+   astro:["Neumond auf etwa 17° Waage","Venus im Skorpion im Quadrat zu Mars im Löwen","Mond im Sextil zu Jupiter"],
+   astroText:"Der Neumond in der Waage eröffnet einen neuen Beziehungszyklus. Gleichzeitig macht Venus–Mars unterschiedliche Wünsche sichtbar: Nähe und Eigenständigkeit, Tiefe und Selbstausdruck, Empfangen und Handeln.",
+   feel:"Zwischen dem alten Beziehungsmuster und einer neuen Entscheidung entsteht ein schöpferischer Spannungsraum.",
+   voices:["deinem alten Muster","deiner neuen Wahl"],
+   topics:["Beziehung zu dir selbst neu definieren","innere und äußere Partnerschaft","Geben und Empfangen","eine neue Liebesentscheidung treffen"],
+   body:{min:"3 Minuten",text:"Forme deine Hände zu einer Schale vor deinem Bauch. Atme ein und stell dir vor, du empfängst. Atme aus und lass los, was du nicht mehr tragen willst. Neumond ist Anfang – in dir."},
+   question:"Welche Liebesentscheidung treffe ich heute – für mich?",
+   impulse:"Neumond-Ritual – zwei Sätze: „In Beziehungen lasse ich zurück …“ und „Von heute an wähle ich …“",
+   letter:"Heute verspreche ich dir …",
+   mantra:"Ich wähle mich. Nicht gegen jemanden – sondern für mich.",
+   evening:"Lies deine beiden Neumond-Sätze bei Kerzenlicht laut und leg den Zettel unter dein Kopfkissen oder an deinen Altar." },
+
+ { date:"2026-10-11", kind:"Herzensdialog 8", title:"Was in dir gehalten werden möchte", gate:"Berühre deine alte Wunde",
+   energyShort:"Chiron, Pluto, Skorpionmond",
+   astro:["Mond zunächst in der Waage gegenüber Chiron","Mond wechselt anschließend in den Skorpion.","Mond im Quadrat zu Pluto","Mond im Quinkunx zu Neptun und Uranus"],
+   astroText:"Chiron berührt alte Verletzungen rund um Identität, Zurückweisung und Beziehung. Mit dem Wechsel des Mondes in den Skorpion wird die Energie tiefer. Pluto kann Gefühle verstärken, die lange kontrolliert wurden.",
+   feel:"Eine alte Wunde zeigt sich nicht, um dich zurückzuwerfen, sondern weil sie heute anders gehalten werden kann.",
+   voices:["der Erwachsenen","der Jüngeren in dir"],
+   topics:["alte Zurückweisung und Liebeskummer","Gefühle zulassen, ohne darin unterzugehen","Selbstmitgefühl statt Selbstverurteilung","der jüngeren Version begegnen"],
+   body:{min:"4 Minuten",text:"Lege deine Hand dorthin, wo sich heute etwas meldet. Lass sie einfach liegen. Atme ruhig und sag innerlich: Ich bin da. Du musst nichts lösen. Halten genügt."},
+   question:"Was hätte ich damals gebraucht – und kann ich es mir heute geben?",
+   impulse:"„Es tut mir leid, dass du damals allein warst mit …“",
+   letter:"Ich lasse dich nicht mehr allein mit …",
+   mantra:"Ich halte mich. Behutsam. In meinem Tempo.",
+   evening:"Heute darf es sanft bleiben. Nichts muss vergeben oder abgeschlossen werden. Wickle dich in eine Decke und gönn dir Ruhe." },
+
+ { date:"2026-10-12", kind:"Herzensdialog 9", title:"Was ich wirklich brauche", gate:"Empfange deine Wahrheit",
+   energyShort:"Mond–Venus–Merkur",
+   astro:["Mond im Skorpion","Mond in Konjunktion mit der rückläufigen Venus","Mond später in Konjunktion mit Merkur","Mond im Quadrat zu Mars"],
+   astroText:"Mond, Venus und Merkur verbinden Fühlen, Lieben und Verstehen. Die Mars-Spannung kann Begehren, Wut oder innere Unruhe freilegen. Gerade deshalb eignet sich dieser Tag für einen ehrlichen Dialog mit den eigenen Bedürfnissen.",
+   feel:"Du kannst nicht mehr überhören, was dein Herz wirklich will.",
+   voices:["deinen Wünschen","deiner Zurückhaltung"],
+   topics:["Bedürfnisse von Forderungen unterscheiden","Empfangen lernen","verborgene Wünsche zulassen","Wut als Hinweis auf verletzte Grenzen"],
+   body:{min:"3 Minuten",text:"Leg deine Hände mit den Handflächen nach oben auf die Oberschenkel. Atme ein und stell dir vor, etwas Gutes landet darin. Bleib einen Moment, ohne es gleich weiterzugeben."},
+   question:"Was brauche ich wirklich – jenseits dessen, was ich mir erlaube?",
+   impulse:"„Du darfst dir wünschen …“ – „Du darfst empfangen …“",
+   letter:"Ich erlaube dir, dir zu wünschen …",
+   mantra:"Ich darf empfangen, ohne etwas zurückzugeben.",
+   evening:"Heute ist ein schöner Tag für ein Tarot- oder Orakelritual: Zieh eine Karte zur Frage „Was darf ich empfangen?“." },
+
+ { date:"2026-10-13", kind:"Herzensdialog 10", title:"Ich bleibe an deiner Seite", gate:"Dein Liebesbrief an dich",
+   energyShort:"Skorpionmond · Saturn und Chiron",
+   astro:["Mond weiterhin im Skorpion","Mond im Quadrat zu Jupiter","Spannung zu Saturn, Mondknoten und Chiron","Sonne in einem Spannungsaspekt zu Uranus"],
+   astroText:"Der letzte Skorpion-Tag verdichtet die bisherigen Erkenntnisse. Das Quadrat zu Jupiter kann Gefühle vergrößern, während Saturn dazu auffordert, ein inneres Versprechen ernst zu nehmen. Uranus möchte, dass die Erkenntnis nicht nur schön klingt, sondern etwas verändert.",
+   feel:"Du erkennst die Größe deiner Geschichte – und entscheidest, wie sie weitergeschrieben wird.",
+   voices:["deinem früheren Ich","deinem heutigen Ich"],
+   topics:["alle Abschnitte zusammenführen","früheres und heutiges Ich versöhnen","ein neuer innerer Beziehungsvertrag","den Liebesbrief laut lesen"],
+   body:{min:"5 Minuten",text:"Stell dich aufrecht hin, die Füße fest im Boden. Lies deinen fertigen Liebesbrief laut – langsam. Spüre, wo deine Stimme im Körper klingt und wie deine Haltung sich dabei verändert."},
+   question:"Welches Versprechen gebe ich mir – und halte es auch an schweren Tagen?",
+   impulse:"„Von heute an werde ich …“",
+   letter:"Ich verspreche dir, dich nicht mehr zu verlassen, um von anderen gewählt zu werden …",
+   mantra:"Ich wähle dich – mit allem, was du warst, mit allem, was du bist und mit allem, was durch dich noch lebendig werden will.",
+   evening:"Leg deinen Liebesbrief an einen Ort, an dem du ihn wiederfindest – für die Tage, an denen du ihn brauchst." },
+
+ /* ---------- Nachklang: vier Wochenkapitel bis Venus direkt wird ---------- */
+ { date:"2026-10-23", weekly:true, turning:true, recap:[1,2,4,5], kind:"Wendepunkt · Wochenkapitel 1", theme:"Selbstliebe", title:"Die Wahrheit deines Herzens", gate:"Die Wiedergeburt des Herzens",
+   energyShort:"Venus im Herzen der Sonne · Cazimi",
+   astro:["Sonne wechselt von der Waage in den Skorpion.","Venus ist rückläufig auf den ersten Graden des Skorpions.","Sonne und Venus nähern sich ihrer exakten Konjunktion auf 0°45′ Skorpion.","Der exakte Venus-Cazimi findet gegen 5:50 Uhr am 24. Oktober (deutsche Sommerzeit) statt – seine Energie baut sich am 23. Oktober deutlich auf.","Mond zunächst in den Fischen, am späten Abend Wechsel in den Widder","Mond in Verbindung mit Neptun und im Sextil zu Pluto","Mond in einem Spannungsaspekt zu Mars","Merkur im Skorpion unmittelbar vor seiner rückläufigen Station"],
+   astroText:"Die rückläufige Venus verschwindet symbolisch im Licht der Sonne. In der traditionellen Bildsprache stirbt eine alte Form der Venus, bevor ein neuer Venuszyklus beginnt. Der Fischemond öffnet einen weichen, intuitiven Raum – Gefühle müssen nicht logisch sein. Der spätere Wechsel in den Widder bringt den Impuls: Was mache ich nun mit dieser Erkenntnis?",
+   feel:"Eine alte Vorstellung von Liebe darf gehen, damit eine wahrhaftigere in dir geboren werden kann.",
+   voices:["der Liebe, die du kanntest","der Liebe, die in dir geboren werden will"],
+   topicsLabel:"Was sich zeigen kann",
+   topics:["große Sensibilität und Durchlässigkeit","Erinnerungen an frühere Beziehungen","Sehnsucht nach einer tieferen Liebe","Trauer über das, was nicht gelebt wurde","Erkenntnisse über Bindung, Vertrauen und Intimität","eine alte Liebesgeschichte innerlich abschließen","eine neue Wahrheit darüber, was Liebe heute bedeutet"],
+   body:{min:"4 Minuten",text:"Setz dich still hin und schließe die Augen. Stell dir vor, du sitzt in warmem, hellem Licht. Du musst nichts tun. Atme aus und lass dich von diesem Licht halten – so, wie Venus heute im Licht der Sonne ruht."},
+   question:"Welche Vorstellung von Liebe muss sterben, damit eine wahrhaftigere Liebe in mir geboren werden kann?",
+   impulse:"„Seit dem Beginn dieser Reise weiß mein Herz …“",
+   letterParts:["Ich verabschiede mich von einer Liebe, in der ich …","Mein Herz ist bereit für eine Liebe, die …"],
+   mantra:"Was gehen darf, geht. Was wahr ist, bleibt.",
+   ritualLabel:"Ritual am Abend des 23. Oktober",
+   ritual:["Schreib eine alte Überzeugung über Liebe auf.","Lies den Satz bewusst vor.","Zerreiß das Papier oder verbrenne es sicher.","Leg über Nacht ein leeres Blatt neben eine Kerze oder unter dein Venus-Symbol.","Schreib am Morgen des 24. Oktober den ersten Satz deiner neuen Liebeserklärung."] },
+
+ { date:"2026-10-31", weekly:true, recap:[3,7], kind:"Wochenkapitel 2", theme:"Verbindung zum Du", title:"Zwischen dir und mir", gate:"Verbindung zum Du",
+   energyShort:"Venus rückläufig · Samhain",
+   astro:["Venus rückläufig, zurück in ihrem eigenen Zeichen Waage","Merkur rückläufig im Skorpion","Samhain: Übergang in die dunkle Jahreshälfte"],
+   astroText:"Die Waage ist das Zeichen der Begegnung. Venus schaut jetzt auf das, was zwischen dir und anderen entsteht: Nähe, Austausch, Geben und Empfangen. Samhain erinnert daran, dass Verbindung auch über das Sichtbare hinausreicht – zu den Menschen, die dich geprägt haben.",
+   feel:"Du darfst dich verbinden, ohne dich zu verlieren.",
+   voices:["deinem Herzen","dem Herzen des anderen"],
+   topics:["ungesagte Worte","innere und äußere Partnerschaft","Geben und Empfangen","Begegnung auf Augenhöhe"],
+   body:{min:"3 Minuten",text:"Leg eine Hand auf dein Herz und strecke die andere offen nach vorn, als würdest du jemandem die Hand reichen. Spüre beide Hände zugleich: bei dir und beim anderen."},
+   question:"Wie kann ich mich verbinden, ohne mich selbst zu verlassen?",
+   impulse:"„In Begegnungen möchte ich künftig …“",
+   letter:"Du darfst lieben, ohne dich aufzugeben, denn …",
+   mantra:"Ich begegne dir – und bleibe bei mir.",
+   evening:"Zünde zu Samhain eine Kerze für einen Menschen an, der dein Herz geprägt hat. Sag ihm in Gedanken, was du heute weißt." },
+
+ { date:"2026-11-07", weekly:true, recap:[6,9], kind:"Wochenkapitel 3", theme:"Abgrenzung", title:"Mein Raum, mein Maß", gate:"Abgrenzung",
+   energyShort:"Venus rückläufig in der Waage",
+   astro:["Venus rückläufig in der Waage","Venus wird langsamer und bereitet ihre Station auf 22°51′ Waage vor","Merkur rückläufig im Skorpion, kurz vor seiner direktläufigen Station"],
+   astroText:"Venus verlangsamt ihre Bewegung. In der Waage fragt sie nach dem Gleichgewicht: Wie viel gibst du, wie viel nimmst du dir? Abgrenzung ist hier keine Mauer, sondern ein Maß – so viel Nähe, wie dir guttut.",
+   feel:"Eine klare Grenze macht dein Herz nicht kleiner. Sie gibt ihm Raum.",
+   voices:["deiner Grenze","deiner Weichheit"],
+   topics:["dein Nein als Ja zu dir","Bedürfnisse ernst nehmen","Harmonie ohne Selbstaufgabe","Wut als Wegweiser"],
+   body:{min:"3 Minuten",text:"Setz dich aufrecht hin und stell dir eine sanfte Hülle um dich vor, etwa eine Armlänge weit. Atme in diesen Raum hinein. Spüre, wie es ist, wenn er ganz dir gehört."},
+   question:"Wo schützt mich eine Grenze – und wo darf sie weicher werden?",
+   impulse:"„Eine Grenze, die ich in diesen Wochen gezogen habe, …“",
+   letter:"Ich schütze dich, damit …",
+   mantra:"Klarheit ist eine Form von Liebe.",
+   evening:"Denk an eine Situation in der kommenden Woche, in der du Nein sagen möchtest. Sprich deinen Satz einmal laut – ruhig und freundlich." },
+
+ { date:"2026-11-14", weekly:true, turning:true, recap:[0,8,10], kind:"Wendepunkt · Wochenkapitel 4", theme:"Gehalten sein", title:"Das Versprechen an dein Herz", gate:"Venus richtet sich wieder auf",
+   energyShort:"Venus wird direktläufig",
+   astro:["Venus wird auf 22°51′ Waage direktläufig.","Exakte Station: 14. November gegen 1:27 Uhr deutscher Zeit.","Venus steht in ihrem eigenen Zeichen Waage.","Mond im Steinbock","Mond im Quadrat zur stationären Venus","Sonne im Skorpion im Sextil zum Mond","Mars im Löwen gegenüber dem Mondknoten","Merkur ist kurz zuvor im Skorpion wieder direktläufig geworden."],
+   astroText:"Venus steht bei ihrer Station nahezu still – ihre Energie ist dadurch besonders konzentriert. Der Steinbockmond macht den Tag ernsthafter, als man es bei einer direktläufigen Venus erwarten würde. Es geht nicht um romantische Euphorie. Das Quadrat zwischen Mond und Venus zeigt: Eine schöne Vorstellung allein genügt nicht. Liebe braucht Entscheidungen, Grenzen, Verantwortung und eine konkrete Form. Die rückläufige Reise endet, doch Venus verlässt ihren Nachschatten erst am 15. Dezember.",
+   feel:"Am 23. Oktober hast du erkannt, was dein Herz weiß. Heute versprichst du dir, danach zu leben.",
+   voices:["der Frau, die sich erinnert","der Frau, die sich entscheidet"],
+   topicsLabel:"Was sich zeigen kann",
+   topics:["langsam zurückkehrende Klarheit","der Wunsch nach einer Entscheidung","ein nüchterner Blick auf Beziehungen","was wirklich tragfähig ist","Verbindlichkeit, Balance und Gegenseitigkeit","erste Bereitschaft, wieder nach vorn zu schauen"],
+   body:{min:"3 Minuten",text:"Leg eine Hand auf dein Herz, die andere auf deinen Unterbauch. Nimm drei tiefe Atemzüge. Spüre, wie du dich selbst hältst – oben und unten, Gefühl und Kraft."},
+   question:"Welche Form von Liebe entspricht der Frau, die ich heute bin?",
+   impulse:"„Was von all meinen Erkenntnissen bin ich bereit, wirklich zu leben?“",
+   letterParts:["Ich verspreche dir, dass ich …","Ich werde nicht länger …","Von heute an wähle ich …"],
+   signature:true,
+   mantra:"Ich erinnere mich. Ich entscheide mich. Ich bin gehalten – von mir.",
+   ritualLabel:"Abschlussritual",
+   ritual:["Lies deinen vollständigen Liebesbrief laut vor.","Leg eine Hand auf dein Herz, die andere auf den Unterbauch.","Nimm drei tiefe Atemzüge.","Wähle den wichtigsten Satz aus deinem Brief.","Stell diesen Satz bis zum Ende des Venus-Nachschattens am 15. Dezember sichtbar auf."] }
+];
+
+const CARDS = [
+ ["Die Herrscherin","Wo darfst du dich heute nähren lassen?"],
+ ["Die Hohepriesterin","Was weißt du längst, ohne es auszusprechen?"],
+ ["Die Liebenden","Welche Wahl triffst du heute für dich?"],
+ ["Die Kraft","Wo darf Sanftheit stärker sein als Kontrolle?"],
+ ["Der Eremit","Welche Stille braucht dein Herz gerade?"],
+ ["Die Mäßigkeit","Was darf sich in dir mischen und versöhnen?"],
+ ["Der Stern","Welche Hoffnung ist leise zurückgekehrt?"],
+ ["Der Mond","Welches Gefühl möchte erst gespürt, noch nicht benannt werden?"],
+ ["Die Sonne","Wo darfst du dich zeigen, ganz ohne Leistung?"],
+ ["Der Tod","Was darf enden, damit Neues atmen kann?"],
+ ["Rad des Schicksals","Welches Muster wiederholt sich – und wo biegst du heute ab?"],
+ ["Gerechtigkeit","Wo gibst du mehr, als du empfängst?"],
+ ["Die Welt","Was ist in dir schon ganz?"],
+ ["Der Narr","Was würdest du tun, wenn du dich nicht erklären müsstest?"]
+];
+
+const WELCOME = "Nimm dir einen Moment, um in deinem Körper anzukommen. Du musst heute nichts erreichen und nichts verändern. Lausche nur darauf, was in dir lebendig ist. Die Energie dieses Tages begleitet dich – doch du entscheidest, wie weit du dich öffnen möchtest.";
+const CLOSING_HEAD = "Nimm aus diesem Tag nur das mit, was sich für dich stimmig anfühlt.";
+const CLOSING_TEXT = "Alles andere darf liegen bleiben. Dein Herz kennt sein eigenes Tempo.";
+
+/* =========================================================
+   ZUSTAND (bleibt nur in diesem Browser)
+   ========================================================= */
+const KEY = "herzensdialoge-2026";
+let S = { entries:{}, preview:false };
+try { const raw = localStorage.getItem(KEY); if (raw) S = Object.assign(S, JSON.parse(raw)); } catch(e){}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
+function E(i){ return S.entries[i] || (S.entries[i] = {}); }
+
+function berlinToday(){
+  try { return new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/Berlin",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date()); }
+  catch(e){ return new Date().toISOString().slice(0,10); }
+}
+const TODAY = berlinToday();
+const isOpen = i => S.preview || DAYS[i].date <= TODAY;
+const isDone = i => !!(S.entries[i] && S.entries[i].done);
+const dayNum = d => +d.slice(8,10);
+const MON = ["","Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
+const shortD = d => `${+d.slice(8,10)}.${+d.slice(5,7)}.`;
+const longD = d => `${+d.slice(8,10)}. ${MON[+d.slice(5,7)]}`;
+const WD = ["So","Mo","Di","Mi","Do","Fr","Sa"];
+const weekday = d => WD[new Date(d+"T12:00:00").getDay()];
+const esc = s => String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+const app = document.getElementById("app");
+let view = {name:"home"};
+
+function go(v){ view = v; render(); window.scrollTo({top:0,behavior:"instant" in window ? "instant":"auto"}); }
+
+/* ---------- Venus-Schleife (scheinbare Rückläufigkeit) ---------- */
+function loopSVG(){
+  const pts=[]; const N=400;
+  for(let k=0;k<=N;k++){
+    const t = -Math.PI*1.15 + (2.3*Math.PI)*k/N;
+    pts.push([ 26*t - 64*Math.sin(t), -46*Math.cos(t) ]);
+  }
+  const xs=pts.map(p=>p[0]), ys=pts.map(p=>p[1]);
+  const minX=Math.min(...xs), maxX=Math.max(...xs), minY=Math.min(...ys), maxY=Math.max(...ys);
+  const W=640, H=190, pad=26;
+  const sx=(W-2*pad)/(maxX-minX), sy=(H-2*pad-18)/(maxY-minY);
+  const P=pts.map(([x,y])=>[pad+(x-minX)*sx, pad+(y-minY)*sy]);
+  const len=[0]; for(let k=1;k<P.length;k++) len.push(len[k-1]+Math.hypot(P[k][0]-P[k-1][0],P[k][1]-P[k-1][1]));
+  const total=len[len.length-1];
+  const at = f => { const L=f*total; let k=len.findIndex(v=>v>=L); if(k<1)k=1; return P[k]; };
+  const d="M"+P.map(p=>p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" L");
+  // Markierungen auf dem mittleren Bogen (Venus hält inne und wendet sich)
+  const nDaily = DAYS.filter(d=>!d.weekly).length;
+  const frac = i => i < nDaily ? .1 + .66*i/(nDaily-1) : .81 + .15*(i-nDaily)/(DAYS.length-nDaily-1);
+  const pos = DAYS.map((_,i)=>at(frac(i)));
+  const near = i => pos.findIndex((q,j)=>j!==i && Math.hypot(q[0]-pos[i][0],q[1]-pos[i][1])<22);
+  const marks = DAYS.map((day,i)=>{
+    const [x,y]=pos[i]; const nb=near(i);
+    const anchor = nb<0 ? "middle" : (pos[nb][0] > x ? "end" : "start");
+    const tx = anchor==="middle" ? x : anchor==="end" ? x-3 : x+3;
+    const cls=["dot", isDone(i)?"done":isOpen(i)?"open":"locked", day.date===TODAY?"today":""].join(" ");
+    const label = shortD(day.date);
+    const ty = y < H/2 ? y-13 : y+20;
+    return `<g class="${cls}" data-day="${i}" tabindex="${isOpen(i)?0:-1}" role="button" aria-label="${esc(day.kind+': '+day.title)}${isOpen(i)?'':' – noch verschlossen'}">
+      ${day.date===TODAY?`<circle class="halo" cx="${x}" cy="${y}" r="12"/>`:""}
+      <circle class="m" cx="${x}" cy="${y}" r="6"/>
+      <text x="${tx}" y="${ty}" style="text-anchor:${anchor}">${label}</text></g>`;
+  }).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" aria-label="Die Kapitel auf der Schleife der rückläufigen Venus">
+    <path class="path" d="${d}"/>${marks}</svg>`;
+}
+
+/* ---------- Ansichten ---------- */
+function home(){
+  const doneCount = DAYS.filter((_,i)=>isDone(i)).length;
+  const started = TODAY >= DAYS[0].date;
+  const until = Math.ceil((new Date(DAYS[0].date+"T00:00:00") - new Date(TODAY+"T00:00:00"))/864e5);
+  return `
+  <header class="bar">
+    <button class="brand" data-go="home">Freya Astro Tarot</button>
+    <button class="navbtn" data-go="letter">Mein Liebesbrief</button>
+  </header>
+  <section class="hero fade">
+    <p class="eyebrow">Eine astrologische Reise zu Selbstliebe, innerem Wert und wahrhaftigen Beziehungen</p>
+    <h1>Wenn Venus <em>rückwärts</em> tanzt</h1>
+    <p class="script">Herzensdialoge</p>
+    <p class="lead">Schreibe den Liebesbrief, den du immer gebraucht hast.</p>
+    <div class="meta">
+      <span>Deine Reise: <b>3. – 13. Oktober 2026</b></span>
+      <span>Nachklang: <b>vier Wochenkapitel bis 14. November</b></span>
+      <span>${started ? `<b>${doneCount} von ${DAYS.length}</b> Kapiteln gegangen` : `Noch <b>${until} Tage</b> bis zum Tor`}</span>
+    </div>
+  </section>
+  <div class="loop">${loopSVG()}</div>
+  <p class="loop-caption">Venus hält inne, wendet sich zurück – und zieht ihre Schleife, bis sie am 14. November wieder nach vorn geht. Mit jedem Kapitel öffnet sich ein neuer Punkt auf ihrem Weg.</p>
+
+  <section class="note">
+    <h2>So begleitet dich jedes Kapitel</h2>
+    <p>Jeden Morgen öffnet sich ein neuer Herzensdialog – ein Gespräch zwischen zwei inneren Stimmen. Du spürst die Tagesenergie, kommst im Körper an, hörst deinem Herzen zu, drückst aus, was sich zeigt, und schreibst deinen Liebesbrief ein Stück weiter. Ein Mantra schließt den Tag.</p>
+    <p class="movement">Erinnern · Erkennen · Aussprechen · Verkörpern · Abgrenzen · neu wählen · fühlen · empfangen · versprechen</p>
+    <p>Danach klingt die Reise nach: Solange Venus rückläufig ist, öffnet sich jede Woche ein Kapitel – mit zwei Wendepunkten: dem Venus-Cazimi am 23. Oktober und der Umkehr der Venus am 14. November. Es führt zusammen, was du erlebt hast – zu <b>Selbstliebe</b>, <b>Verbindung zum Du</b>, <b>Abgrenzung</b> und <b>Gehalten sein</b>.</p>
+  </section>
+
+  ${group("Die elf Tage", "3. – 13. Oktober", DAYS.map((d,i)=>i).filter(i=>!DAYS[i].weekly))}
+  ${group("Der Nachklang", "Vier Wochen bis Venus direkt wird", DAYS.map((d,i)=>i).filter(i=>DAYS[i].weekly))}
+  ${draftToggle()}`;
+}
+
+function group(h, sub, idx){
+  return `<section class="group"><div class="group-h"><h2>${h}</h2><span class="eyebrow">${sub}</span></div><div class="list">
+    ${idx.map(i=>{ const d=DAYS[i];
+      const st = isDone(i)?"done":isOpen(i)?"open":"locked";
+      const stLabel = st==="done"?"gegangen":st==="open"?(d.date===TODAY?"heute offen":"offen"):"öffnet am "+shortD(d.date);
+      return `<button class="row ${st==='locked'?'is-locked':''}" data-day="${i}" ${st==='locked'?'aria-disabled="true"':''}>
+        <span class="date">${dayNum(d.date)}.<small>${weekday(d.date)} · ${MON[+d.date.slice(5,7)].slice(0,3)}</small></span>
+        <span class="t"><span class="k">${esc(d.kind)}</span><span class="n">${esc(d.title)}</span><span class="e">${esc(d.energyShort)}</span></span>
+        <span class="state ${st}">${stLabel}</span>
+      </button>`;}).join("")}
+  </div></section>`;
+}
+
+function waveBars(){ let s=""; for(let k=0;k<48;k++){ const h=4+Math.abs(Math.sin(k*.7)*Math.cos(k*.23))*18; s+=`<i style="height:${h.toFixed(0)}px"></i>`; } return s; }
+
+function chapter(i){
+  const d=DAYS[i], e=E(i);
+  const mode = e.mode || "schreiben";
+  const card = e.card!=null ? CARDS[e.card] : null;
+  return `
+  <header class="bar">
+    <button class="navbtn" data-go="home">← Alle Kapitel</button>
+    <button class="navbtn" data-go="letter">Mein Liebesbrief</button>
+  </header>
+  <section class="ch-head fade">
+    <p class="eyebrow">${longD(d.date)} · ${esc(d.kind)} · ${esc(d.gate)}</p>
+    <h1>${esc(d.title)}</h1>
+    <p class="voices">Ein Dialog zwischen <b>${esc(d.voices[0])}</b> und <b>${esc(d.voices[1])}</b></p>
+    <p class="feel">${esc(d.feel)}</p>
+  </section>
+
+  <section class="welcome">
+    <p class="script">Schön, dass du da bist.</p>
+    <p>${WELCOME}</p>
+  </section>
+
+  ${d.recap ? recapBlock(d) : ""}
+  <article>
+    <div class="step"><span class="num">1</span><div class="body">
+      <h3>Tagesenergie wahrnehmen</h3>
+      <div class="audio">
+        <span class="play" aria-hidden="true"><svg viewBox="0 0 10 12"><path d="M0 0 L10 6 L0 12Z"/></svg></span>
+        <span class="wave">${waveBars()}</span>
+        <span class="lbl">Audio · folgt</span>
+      </div>
+      <p>${esc(d.astroText)}</p>
+      <details class="astro"><summary>Die Konstellationen des Tages</summary>
+        <ul>${d.astro.map(a=>`<li>${esc(a)}</li>`).join("")}</ul>
+        <p class="fine">Westlich-tropische, geozentrische Astrologie. Die Deutungen beschreiben die symbolische Tagesqualität – dein persönliches Erleben hängt auch von deinem Geburtshoroskop ab.</p>
+      </details>
+    </div></div>
+
+    <div class="step"><span class="num">2</span><div class="body">
+      <h3>Im Körper ankommen</h3>
+      <div class="practice"><span class="min">${esc(d.body.min)}</span><p>${esc(d.body.text)}</p></div>
+    </div></div>
+
+    <div class="step"><span class="num">3</span><div class="body">
+      <h3>Dem Herzen zuhören</h3>
+      <p class="sub">Deine Frage für heute</p>
+      <p class="question">${esc(d.question)}</p>
+      ${d.topicsLabel?`<p class="sub" style="margin-top:4px">${esc(d.topicsLabel)}</p>`:""}
+      <div class="topics">${d.topics.map(t=>`<span>${esc(t)}</span>`).join("")}</div>
+    </div></div>
+
+    <div class="step"><span class="num">4</span><div class="body">
+      <h3>Erlebtes ausdrücken</h3>
+      <p>Ohne Anspruch auf Perfektion. Wähle, was sich heute stimmig anfühlt.</p>
+      <div class="tabs" role="tablist">
+        ${[["schreiben","Schreiben"],["karte","Karte ziehen"],["koerper","Malen · Bewegen · Sprechen"]].map(([k,l])=>`<button class="tab" role="tab" aria-selected="${mode===k}" data-mode="${k}">${l}</button>`).join("")}
+      </div>
+      ${mode==="schreiben" ? `
+        <p class="prompt">${esc(d.impulse)}</p>
+        <textarea id="expr-${i}" data-field="expr" placeholder="Schreib einfach los …">${esc(e.expr||"")}</textarea>
+        <span class="saved" data-saved="expr"></span>`
+      : mode==="karte" ? `
+        <div class="card-draw">
+          <button class="tcard" id="draw-${i}" aria-label="${card?'Andere Karte ziehen':'Karte ziehen'}">
+            ${card ? `<span class="face"><small>DEINE KARTE</small>${esc(card[0])}</span>`
+                   : `<span class="back"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="14"/><path d="M20 6 V34 M6 20 H34"/></svg></span>`}
+          </button>
+          <div class="body" style="gap:8px">
+            ${card ? `<p class="prompt">${esc(card[1])}</p><p style="font-size:.85rem">Halte die Frage neben die heutige Tagesenergie. Was antwortet dein Herz?</p>`
+                   : `<p>Atme einmal tief, denk an deine Frage für heute und tippe auf die Karte.</p>`}
+          </div>
+        </div>
+        ${card ? `<textarea id="cardnote-${i}" data-field="cardnote" placeholder="Was die Karte in dir berührt …">${esc(e.cardnote||"")}</textarea><span class="saved" data-saved="cardnote"></span>`:""}`
+      : `
+        <p class="prompt">${esc(d.impulse)}</p>
+        <p>Nimm ein Blatt und lass Farben sprechen. Oder bewege dich zu einem Lied, das dich heute berührt. Oder sprich deine Antwort als Sprachnachricht an dich selbst. Hinterher kannst du hier festhalten, was du bemerkt hast.</p>
+        <textarea id="free-${i}" data-field="free" placeholder="Was habe ich bemerkt …">${esc(e.free||"")}</textarea>
+        <span class="saved" data-saved="free"></span>`}
+    </div></div>
+
+    <div class="step"><span class="num">5</span><div class="body">
+      <h3>Den Liebesbrief weiterführen</h3>
+      <p>Jeden Tag entsteht ein neuer Abschnitt deines persönlichen Briefes.</p>
+      ${letterPrompts(d).map((lp,k)=>{ const f=k?`letter${k}`:"letter"; return `<div class="letter-box">
+        <span class="lp">${esc(lp)}</span>
+        <textarea id="${f}-${i}" data-field="${f}" placeholder="… und hier schreibst du weiter.">${esc(e[f]||"")}</textarea>
+        <span class="saved" data-saved="${f}"></span>
+      </div>`;}).join("")}
+      ${d.signature?`<div class="letter-box"><span class="lp">Unterschrift</span><p style="font-size:.88rem">Unterschreib deinen Brief mit Ort und Datum. So wird er zu einem bewussten inneren Vertrag.</p>
+        <input class="sign-in" id="sign-${i}" data-field="sign" placeholder="Leipzig, 14. November 2026" value="${esc(e.sign||"")}">
+        <span class="saved" data-saved="sign"></span></div>`:""}
+    </div></div>
+
+    <div class="step"><span class="num">6</span><div class="body">
+      <h3>Die Energie integrieren</h3>
+      <p class="mantra">${esc(d.mantra)}</p>
+      ${d.ritual ? `<div class="practice"><span class="min">${esc(d.ritualLabel||"Ritual")}</span><ol class="ritual">${d.ritual.map(r=>`<li>${esc(r)}</li>`).join("")}</ol></div>`
+                 : `<div class="practice"><span class="min">Abendpraxis</span><p>${esc(d.evening)}</p></div>`}
+    </div></div>
+  </article>
+
+  <section class="closing">
+    <p class="script">${CLOSING_HEAD}</p>
+    <p>${CLOSING_TEXT}</p>
+    <button class="donebtn ${e.done?'is-done':''}" id="done-${i}">${e.done?"Kapitel gegangen · wieder öffnen":"Dieses Kapitel abschließen"}</button>
+  </section>
+
+  <nav class="pager">
+    ${i>0?`<button class="navbtn" data-day="${i-1}">← ${esc(DAYS[i-1].title)}</button>`:"<span></span>"}
+    ${i<DAYS.length-1 ? (isOpen(i+1)?`<button class="navbtn" data-day="${i+1}">${esc(DAYS[i+1].title)} →</button>`:`<span class="navbtn" style="opacity:.6;cursor:default">Nächstes Kapitel öffnet am ${shortD(DAYS[i+1].date)}</span>`) : `<button class="navbtn" data-go="letter">Deinen Liebesbrief lesen →</button>`}
+  </nav>
+  ${draftToggle()}`;
+}
+
+function letterPrompts(d){ return d.letterParts || [d.letter]; }
+
+function recapBlock(d){
+  const items = d.recap.map(j=>{
+    const e=S.entries[j]||{}; const own=(e.letter||e.expr||"").trim();
+    return `<li><button class="rc-link" data-day="${j}">${shortD(DAYS[j].date)} · ${esc(DAYS[j].title)}</button>
+      ${own ? `<p class="rc-own">„${esc(own.length>220?own.slice(0,220)+" …":own)}“</p>` : `<p class="rc-empty">${esc(DAYS[j].feel)}</p>`}</li>`;
+  }).join("");
+  return `<section class="recap"><p class="eyebrow">Rückschau · ${esc(d.theme)}</p>
+    <p>Bevor du beginnst, lies noch einmal, was du in diesen Kapiteln erlebt und geschrieben hast.</p>
+    <ul>${items}</ul></section>`;
+}
+
+function letterView(){
+  const parts = [];
+  DAYS.forEach((d,i)=>{ const e=S.entries[i]||{};
+    letterPrompts(d).forEach((lp,k)=>{ const t=(e[k?`letter${k}`:"letter"]||"").trim(); if(t) parts.push({d,i,lp,t,first:!parts.some(x=>x.i===i)}); });
+  });
+  const any = parts.length>0;
+  const signIdx = DAYS.findIndex(d=>d.signature);
+  const sign = signIdx>=0 && S.entries[signIdx] ? (S.entries[signIdx].sign||"").trim() : "";
+  return `
+  <header class="bar">
+    <button class="navbtn" data-go="home">← Alle Kapitel</button>
+  </header>
+  <section class="ch-head fade">
+    <p class="eyebrow">Dein Brief · wächst mit jedem Kapitel</p>
+    <h1>Der Liebesbrief, den du immer gebraucht hast</h1>
+  </section>
+  <div class="full-letter">
+    <p class="salute">Meine Liebe,</p>
+    ${any ? parts.map(p=>`<div class="part">${p.first?`<span class="from">${longD(p.d.date)} · ${esc(p.d.title)}</span>`:""}<p><em>${esc(p.lp.replace(/ …$/," "))}</em>${esc(p.t)}</p></div>`).join("")
+          : `<p class="empty">Noch ist dieser Brief leer. Mit jedem Herzensdialog schreibst du einen neuen Abschnitt – hier fügen sich alle zusammen, damit du ihn am 13. Oktober laut lesen und bis zum 14. November weiterschreiben kannst.</p>`}
+    <p class="sign">in Liebe, ich</p>
+    ${sign?`<p class="sign-place">${esc(sign)}</p>`:""}
+  </div>
+  ${draftToggle()}`;
+}
+
+function draftToggle(){
+  return `<div class="draft"><label><input type="checkbox" id="preview" ${S.preview?"checked":""}> Entwurfsansicht: alle Kapitel schon jetzt öffnen</label><span>· Heute (Berlin): ${TODAY.split("-").reverse().join(".")}</span></div>`;
+}
+
+/* ---------- Rendern & Ereignisse ---------- */
+function render(){
+  if(view.name==="day" && !isOpen(view.i)) view={name:"home"};
+  app.innerHTML = view.name==="day" ? chapter(view.i) : view.name==="letter" ? letterView() : home();
+}
+
+app.addEventListener("click", ev=>{
+  const t = ev.target.closest("[data-go],[data-day],[data-mode],.tcard,.donebtn");
+  if(!t) return;
+  if(t.dataset.go){ go({name:t.dataset.go}); return; }
+  if(t.dataset.mode){ E(view.i).mode=t.dataset.mode; save(); render(); return; }
+  if(t.classList.contains("tcard")){ const e=E(view.i); let n; do{ n=Math.floor(Math.random()*CARDS.length);}while(n===e.card && CARDS.length>1); e.card=n; save(); render(); return; }
+  if(t.classList.contains("donebtn")){ const e=E(view.i); e.done=!e.done; save(); render(); return; }
+  if(t.dataset.day!=null){ const i=+t.dataset.day; if(isOpen(i)) go({name:"day",i}); }
+});
+app.addEventListener("keydown", ev=>{
+  const g = ev.target.closest && ev.target.closest("g.dot");
+  if(g && (ev.key==="Enter"||ev.key===" ")){ ev.preventDefault(); const i=+g.dataset.day; if(isOpen(i)) go({name:"day",i}); }
+});
+let timer;
+app.addEventListener("input", ev=>{
+  const f = ev.target.dataset && ev.target.dataset.field;
+  if(!f || view.name!=="day") return;
+  E(view.i)[f]=ev.target.value;
+  clearTimeout(timer);
+  timer=setTimeout(()=>{ save(); const s=app.querySelector(`[data-saved="${f}"]`); if(s){ s.textContent="Gespeichert – nur auf diesem Gerät."; } },500);
+});
+app.addEventListener("change", ev=>{
+  if(ev.target.id==="preview"){ S.preview=ev.target.checked; save(); render(); }
+});
+
+render();
+</script>
+</body>
+</html>
